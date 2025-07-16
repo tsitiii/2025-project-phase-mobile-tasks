@@ -67,7 +67,7 @@ class ProductManager {
 void main() {
   ProductManager manager = ProductManager();
 
-  // Add some initial products
+  // Add initial products
   manager.addNewProduct(
     Product(1, "Nike shoe", "A new trending shoe, with reasonable price", 2500),
   );
@@ -101,15 +101,40 @@ void main() {
         break;
 
       case '2':
-        addProductInteractively(manager);
+        stdout.write("Enter product id: ");
+        String? idInput = stdin.readLineSync();
+        int? id = int.tryParse(idInput ?? '') ?? 0;
+
+        stdout.write("Enter product name: ");
+        String? name = stdin.readLineSync();
+
+        stdout.write("Enter product description: ");
+        String? description = stdin.readLineSync();
+
+        stdout.write("Enter product price: ");
+        String? priceInput = stdin.readLineSync();
+        double price = double.tryParse(priceInput ?? '') ?? 0;
+
+        manager.addNewProduct(Product(id, name, description, price));
         break;
 
       case '3':
-        editProductInteractively(manager);
+        stdout.write("Enter product id to edit: ");
+        String? editIdInput = stdin.readLineSync();
+        int? editId = int.tryParse(editIdInput ?? '') ?? 0;
+
+        stdout.write("Enter new name: ");
+        String? newName = stdin.readLineSync();
+
+        manager.editProduct(editId, name: newName);
         break;
 
       case '4':
-        deleteProductInteractively(manager);
+        stdout.write("Enter product id to delete: ");
+        String? deleteIdInput = stdin.readLineSync();
+        int? deleteId = int.tryParse(deleteIdInput ?? '') ?? 0;
+
+        manager.deleteProdcut(deleteId);
         break;
 
       case '5':
@@ -120,85 +145,4 @@ void main() {
         print('Invalid choice! Please enter a number between 1-5.');
     }
   }
-}
-
-void addProductInteractively(ProductManager manager) {
-  print('\n--- Add New Product ---');
-
-  stdout.write('Enter product ID: ');
-  String? idInput = stdin.readLineSync();
-  int? id = int.tryParse(idInput ?? '');
-
-  if (id == null) {
-    print('Invalid ID! Please enter a valid number.');
-    return;
-  }
-
-  stdout.write('Enter product name: ');
-  String? name = stdin.readLineSync();
-
-  stdout.write('Enter product description: ');
-  String? description = stdin.readLineSync();
-
-  stdout.write('Enter product price: ');
-  String? priceInput = stdin.readLineSync();
-  double? price = double.tryParse(priceInput ?? '');
-
-  if (price == null) {
-    print('Invalid price! Please enter a valid number.');
-    return;
-  }
-
-  manager.addNewProduct(Product(id, name, description, price));
-  print('Product added successfully!');
-}
-
-void editProductInteractively(ProductManager manager) {
-  print('\n--- Edit Product ---');
-  manager.viewAllProduct();
-
-  stdout.write('Enter product ID to edit: ');
-  String? idInput = stdin.readLineSync();
-  int? id = int.tryParse(idInput ?? '');
-
-  if (id == null) {
-    print('Invalid ID! Please enter a valid number.');
-    return;
-  }
-
-  stdout.write('Enter new name (or press Enter to skip): ');
-  String? name = stdin.readLineSync();
-  if (name?.isEmpty ?? true) name = null;
-
-  stdout.write('Enter new description (or press Enter to skip): ');
-  String? description = stdin.readLineSync();
-  if (description?.isEmpty ?? true) description = null;
-
-  stdout.write('Enter new price (or press Enter to skip): ');
-  String? priceInput = stdin.readLineSync();
-  double? price;
-  if (priceInput?.isNotEmpty ?? false) {
-    price = double.tryParse(priceInput!);
-    if (price == null) {
-      print('Invalid price! Skipping price update.');
-    }
-  }
-
-  manager.editProduct(id, name: name, description: description, price: price);
-}
-
-void deleteProductInteractively(ProductManager manager) {
-  print('\n--- Delete Product ---');
-  manager.viewAllProduct();
-
-  stdout.write('Enter product ID to delete: ');
-  String? idInput = stdin.readLineSync();
-  int? id = int.tryParse(idInput ?? '');
-
-  if (id == null) {
-    print('Invalid ID! Please enter a valid number.');
-    return;
-  }
-
-  manager.deleteProdcut(id);
 }
