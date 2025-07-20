@@ -1,7 +1,7 @@
 import 'package:ecommerce_app/addProduct.dart';
 import 'package:ecommerce_app/productDetail.dart';
 import 'package:flutter/material.dart';
-
+import 'search.dart';
 class Product extends StatelessWidget {
   Product({super.key});
 
@@ -153,7 +153,9 @@ class Product extends StatelessWidget {
                         iconSize: 25,
                         color: Colors.grey,
                         icon: Icon(Icons.search_outlined),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Search()));
+                        },
                       ),
                     ),
                   ],
