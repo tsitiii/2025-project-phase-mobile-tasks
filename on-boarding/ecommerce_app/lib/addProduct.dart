@@ -67,15 +67,20 @@ class _AddproductState extends State<Addproduct> {
               child: Padding(
                 padding: const EdgeInsets.all(13.0),
                 child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("name"),
                         const SizedBox(height: 10),
                         TextFormField(
                           decoration: InputDecoration(
+                            fillColor: const Color.fromARGB(255, 207, 206, 206),
+                            filled: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
@@ -83,13 +88,17 @@ class _AddproductState extends State<Addproduct> {
                     ),
                     const SizedBox(height: 15),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("Category"),
                         const SizedBox(height: 10),
                         TextFormField(
                           decoration: InputDecoration(
+                            fillColor: const Color.fromARGB(255, 207, 206, 206),
+                            filled: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
@@ -97,13 +106,17 @@ class _AddproductState extends State<Addproduct> {
                     ),
                     const SizedBox(height: 15),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("Price"),
                         const SizedBox(height: 10),
                         TextFormField(
                           decoration: InputDecoration(
+                            fillColor: const Color.fromARGB(255, 207, 206, 206),
+                            filled: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
@@ -111,6 +124,7 @@ class _AddproductState extends State<Addproduct> {
                     ),
                     const SizedBox(height: 15),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text("Description", style: TextStyle()),
                         const SizedBox(height: 10),
@@ -120,10 +134,71 @@ class _AddproductState extends State<Addproduct> {
                             filled: true,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
                       ],
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: double.infinity,
+                      height: 55,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.blue[400]!, Colors.blue[600]!],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          "ADD",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      width: double.infinity,
+                      height: 55,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.red, width: 2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // Handle delete logic here
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          "DELETE",
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

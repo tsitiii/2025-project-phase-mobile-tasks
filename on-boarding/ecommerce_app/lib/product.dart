@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/addProduct.dart';
 import 'package:ecommerce_app/productDetail.dart';
 import 'package:flutter/material.dart';
 
@@ -262,12 +263,14 @@ class Product extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print("FAB tapped!");
-          // Add your functionality here
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Addproduct()),
+          );
         },
         backgroundColor: Colors.blueAccent,
         foregroundColor: Colors.white,
-        shape: CircleBorder(), // This ensures perfect circular shape
+        shape: CircleBorder(),
         child: Icon(Icons.add),
       ),
     );
