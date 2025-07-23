@@ -59,8 +59,6 @@ class _SearchState extends State<Search> {
                 ],
               ),
               const SizedBox(height: 20),
-
-              // Product Card
               Card(
                 elevation: 3,
                 shape: RoundedRectangleBorder(

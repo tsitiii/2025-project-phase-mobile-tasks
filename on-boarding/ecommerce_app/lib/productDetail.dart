@@ -3,26 +3,52 @@ import 'package:flutter/material.dart';
 class Productdetail extends StatelessWidget {
   Productdetail({super.key});
 
-  List<Map<String, dynamic>> product = [
-    {
-      "image": "images/book2.jpg",
-      "title": "The Last Super",
-      "price": 23,
-      "category": "mens",
-      "rating": 4.0,
-      "description":
-          "Discover the thrilling conclusion to an epic saga with 'The Last Super' - a masterfully crafted novel that combines elements of science fiction, fantasy, and psychological drama. This captivating story follows the journey of Marcus Thompson, a reluctant hero who must navigate through a world where reality and imagination blur together in unexpected ways.\n\nSet in a dystopian future where technology has advanced beyond human comprehension, the narrative explores themes of sacrifice, redemption, and the true meaning of heroism. The author's vivid descriptions transport readers to a realm where every page turn reveals new mysteries and challenges that will keep you on the edge of your seat.\n\nWith over 400 pages of intense storytelling, this book features complex character development, intricate plot twists, and philosophical questions that will resonate with readers long after they've finished the final chapter. The writing style seamlessly blends fast-paced action sequences with moments of deep introspection, creating a reading experience that is both entertaining and thought-provoking.\n\nPerfect for fans of dystopian fiction, science fantasy, and psychological thrillers, 'The Last Super' has received critical acclaim from literary reviewers and has been featured on multiple bestseller lists. Whether you're a seasoned reader of the genre or new to this type of storytelling, this book promises to deliver an unforgettable journey that challenges conventional thinking and explores the depths of human nature.",
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
+    // ✅ ADD NULL SAFETY - Check if arguments exist
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+
+    // ✅ Handle null or wrong type arguments
+    if (arguments == null || arguments is! Map<String, dynamic>) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Error"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error_outline, size: 64, color: Colors.red),
+              SizedBox(height: 16),
+              Text(
+                "No product data available",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Go Back"),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // ✅ Now safely cast to Map
+    final Map<String, dynamic> currProduct = arguments;
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(13.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
+              const SizedBox(height: 40), // ✅ Add top padding for status bar
               Stack(
                 children: [
                   Container(
@@ -35,8 +61,15 @@ class Productdetail extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: Image.asset(
-                        product[0]["image"],
+                        currProduct["image"] ??
+                            "images/placeholder.jpg", // ✅ Add null safety
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey[300],
+                            child: Icon(Icons.image_not_supported, size: 50),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -59,28 +92,58 @@ class Productdetail extends StatelessWidget {
                 ],
               ),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    product[0]["title"],
-                    style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
-                  ),
-                  Text("\$${product[0]['price']}"),
-                ],
-              ),
               const SizedBox(height: 20),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    // ✅ Prevent overflow
+                    child: Text(
+                      currProduct["title"] ?? "No Title",
+                      style: TextStyle(
+                        fontSize: 23,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "\$${currProduct['price'] ?? 0}",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green[600],
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 20),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    product[0]["category"],
-                    style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+                    currProduct["category"] ?? "No Category",
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
                   ),
-                  Text("${product[0]["rating"]}"),
+                  Row(
+                    children: [
+                      Icon(Icons.star, color: Colors.orange, size: 20),
+                      Text(
+                        "${currProduct["rating"] ?? 0.0}",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
+
               const SizedBox(height: 30),
+
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -88,9 +151,11 @@ class Productdetail extends StatelessWidget {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
+
               const SizedBox(height: 10),
+
               Text(
-                product[0]["description"],
+                currProduct["description"] ?? "No description available.",
                 style: TextStyle(
                   fontSize: 14,
                   height: 1.5,
@@ -98,28 +163,50 @@ class Productdetail extends StatelessWidget {
                 ),
                 textAlign: TextAlign.justify,
               ),
+
               const SizedBox(height: 20),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 12,
+                      ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      // TODO: Implement update functionality
+                    },
                     child: Text(
-                      "update",
-                      style: TextStyle(color: Colors.white),
+                      "UPDATE",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       side: BorderSide(color: Colors.red),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 12,
+                      ),
                     ),
-                    onPressed: () {},
-                    child: Text("Delete", style: TextStyle(color: Colors.red)),
+                    onPressed: () {
+                      // TODO: Implement delete functionality
+                    },
+                    child: Text(
+                      "DELETE",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),

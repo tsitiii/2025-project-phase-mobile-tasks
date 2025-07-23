@@ -1,7 +1,8 @@
 import 'package:ecommerce_app/addProduct.dart';
-import 'package:ecommerce_app/productDetail.dart';
 import 'package:flutter/material.dart';
+
 import 'search.dart';
+
 class Product extends StatelessWidget {
   Product({super.key});
 
@@ -12,6 +13,8 @@ class Product extends StatelessWidget {
       "price": 23,
       "category": "mens",
       "rating": 4.0,
+      "description":
+          "A thrilling adventure novel that combines action, mystery, and unforgettable characters in an epic story.", // ✅ Add this
     },
     {
       "image": "images/cute.jpg",
@@ -19,6 +22,8 @@ class Product extends StatelessWidget {
       "price": 45,
       "category": "mens",
       "rating": 4.2,
+      "description":
+          "Comfortable and stylish hoodie perfect for casual wear. Made from high-quality cotton blend material.", // ✅ Add this
     },
     {
       "image": "images/ear.jpg",
@@ -26,6 +31,8 @@ class Product extends StatelessWidget {
       "price": 89,
       "category": "electronics",
       "rating": 4.5,
+      "description":
+          "Premium wireless earbuds with noise cancellation, long battery life, and crystal clear audio quality.", // ✅ Add this
     },
     {
       "image": "images/green.jpg",
@@ -33,6 +40,8 @@ class Product extends StatelessWidget {
       "price": 15,
       "category": "home",
       "rating": 3.8,
+      "description":
+          "Beautiful indoor plant that adds freshness to your home. Easy to care for and perfect for beginners.", // ✅ Add this
     },
     {
       "image": "images/harry.jpg",
@@ -40,6 +49,8 @@ class Product extends StatelessWidget {
       "price": 12,
       "category": "books",
       "rating": 4.7,
+      "description":
+          "The magical world of Harry Potter comes alive in this bestselling fantasy novel series loved by millions.", // ✅ Add this
     },
     {
       "image": "images/home.jpg",
@@ -47,6 +58,8 @@ class Product extends StatelessWidget {
       "price": 67,
       "category": "home",
       "rating": 4.1,
+      "description":
+          "Elegant home decoration pieces that transform your living space into a stylish and cozy environment.", // ✅ Add this
     },
     {
       "image": "images/gumball.jpg",
@@ -54,6 +67,8 @@ class Product extends StatelessWidget {
       "price": 120,
       "category": "toys",
       "rating": 4.3,
+      "description":
+          "Classic vintage-style gumball machine that brings joy and nostalgia to any room. Perfect for kids and adults.", // ✅ Add this
     },
     {
       "image": "images/google.png",
@@ -61,6 +76,8 @@ class Product extends StatelessWidget {
       "price": 199,
       "category": "electronics",
       "rating": 4.6,
+      "description":
+          "Innovative Google device with smart features, voice control, and seamless integration with your digital life.", // ✅ Add this
     },
   ];
 
@@ -154,7 +171,10 @@ class Product extends StatelessWidget {
                         color: Colors.grey,
                         icon: Icon(Icons.search_outlined),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>Search()));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Search()),
+                          );
                         },
                       ),
                     ),
@@ -174,12 +194,21 @@ class Product extends StatelessWidget {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushNamed(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => Productdetail(),
-                          ),
+                          '/product',
+                          arguments: productlist[index],
                         );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder:
+                        //         (context) => Productdetail(
+                        //           product: index,
+                        //           products: productlist,
+                        //         ),
+                        //   ),
+                        // );
                       },
                       child: Card(
                         color: Colors.white,
@@ -192,7 +221,7 @@ class Product extends StatelessWidget {
                               child: Container(
                                 width: double.infinity,
                                 child: Image.asset(
-                                  product["image"]!,
+                                  productlist[index]["image"]!,
                                   fit: BoxFit.cover,
                                 ),
                               ),

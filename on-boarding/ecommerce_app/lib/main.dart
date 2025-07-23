@@ -1,3 +1,5 @@
+import 'package:ecommerce_app/productDetail.dart';
+import 'package:ecommerce_app/search.dart';
 import 'package:flutter/material.dart';
 
 import 'product.dart';
@@ -17,7 +19,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home:  Product(),
+      initialRoute: "/",
+      routes: {
+        '/': (context) => Product(),
+        '/product': (context) => Productdetail(),
+        '/search': (context) => Search(),
+      },
     );
   }
 }
