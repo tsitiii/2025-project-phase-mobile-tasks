@@ -5,16 +5,14 @@ class Productdetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ ADD NULL SAFETY - Check if arguments exist
     final arguments = ModalRoute.of(context)?.settings.arguments;
 
-    // ✅ Handle null or wrong type arguments
     if (arguments == null || arguments is! Map<String, dynamic>) {
       return Scaffold(
         appBar: AppBar(
-          title: Text("Error"),
+          title: const Text("Error"),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -22,16 +20,16 @@ class Productdetail extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.error_outline, size: 64, color: Colors.red),
-              SizedBox(height: 16),
-              Text(
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              const Text(
                 "No product data available",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text("Go Back"),
+                child: const Text("Go Back"),
               ),
             ],
           ),
@@ -39,7 +37,6 @@ class Productdetail extends StatelessWidget {
       );
     }
 
-    // ✅ Now safely cast to Map
     final Map<String, dynamic> currProduct = arguments;
 
     return Scaffold(
@@ -48,7 +45,7 @@ class Productdetail extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 40), // ✅ Add top padding for status bar
+              const SizedBox(height: 40),
               Stack(
                 children: [
                   Container(
@@ -67,7 +64,10 @@ class Productdetail extends StatelessWidget {
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
                             color: Colors.grey[300],
-                            child: Icon(Icons.image_not_supported, size: 50),
+                            child: const Icon(
+                              Icons.image_not_supported,
+                              size: 50,
+                            ),
                           );
                         },
                       ),
@@ -82,7 +82,7 @@ class Productdetail extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
-                        icon: Icon(Icons.arrow_back, color: Colors.black),
+                        icon: const Icon(Icons.arrow_back, color: Colors.black),
                         onPressed: () {
                           Navigator.pop(context);
                         },
@@ -98,10 +98,9 @@ class Productdetail extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    // ✅ Prevent overflow
                     child: Text(
                       currProduct["title"] ?? "No Title",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 23,
                         fontWeight: FontWeight.bold,
                       ),
@@ -129,10 +128,10 @@ class Productdetail extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      Icon(Icons.star, color: Colors.orange, size: 20),
+                      const Icon(Icons.star, color: Colors.orange, size: 20),
                       Text(
                         "${currProduct["rating"] ?? 0.0}",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -144,7 +143,7 @@ class Productdetail extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              Align(
+              const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Description",
@@ -172,15 +171,14 @@ class Productdetail extends StatelessWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 30,
                         vertical: 12,
                       ),
                     ),
                     onPressed: () {
-                      // TODO: Implement update functionality
                     },
-                    child: Text(
+                    child: const Text(
                       "UPDATE",
                       style: TextStyle(
                         color: Colors.white,
@@ -191,8 +189,8 @@ class Productdetail extends StatelessWidget {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      side: BorderSide(color: Colors.red),
-                      padding: EdgeInsets.symmetric(
+                      side: const BorderSide(color: Colors.red),
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 30,
                         vertical: 12,
                       ),
@@ -200,7 +198,7 @@ class Productdetail extends StatelessWidget {
                     onPressed: () {
                       // TODO: Implement delete functionality
                     },
-                    child: Text(
+                    child: const Text(
                       "DELETE",
                       style: TextStyle(
                         color: Colors.red,

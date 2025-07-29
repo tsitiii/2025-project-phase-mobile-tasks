@@ -26,7 +26,7 @@ linter:
     prefer_const_literals_to_create_immutables: true
     avoid_unnecessary_containers: true
     always_declare_return_types: true
-    prefer_single_quotes: true
+    # prefer_single_quotes: trues
     directives_ordering: true
     prefer_relative_imports: true
 # Additional information about this file can be found at
