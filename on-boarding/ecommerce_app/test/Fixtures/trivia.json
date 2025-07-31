@@ -1,0 +1,6 @@
+{
+    "text":"Test text is the number",
+    "number": 1.0,
+    "found":true,
+    "type":"trivia"
+}
