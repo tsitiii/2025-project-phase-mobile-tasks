@@ -1,16 +1,65 @@
-# ecommerce_app
+# Ecommerce App
 
-A new Flutter project.
+A mobile ecommerce application built with Flutter.  
+This app demonstrates clean architecture, domain-driven design, and unit testing.
+
+## Features
+
+- Product listing (CRUD)
+- Product details
+- Add, update, and delete products
+- Search products
+- Local and remote data sources
+- Error handling and network awareness
+
+## Architecture
+
+- **Domain Layer:** Entities, repositories, usecases
+- **Data Layer:** Models, repository implementations, data sources
+- **Presentation Layer:** UI widgets, screens
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/ecommerce_app.git
+   cd ecommerce_app
+   ```
 
-A few resources to get you started if this is your first Flutter project:
+2. **Install dependencies:**
+   ```bash
+   flutter pub get
+   ```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+3. **Run the app:**
+   ```bash
+   flutter run
+   ```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+4. **Run tests:**
+   ```bash
+   flutter test
+   ```
+
+## Folder Structure
+
+```
+lib/
+  features/
+    product/
+      domain/
+      data/
+      presentation/
+    number_trivia/
+      domain/
+      data/
+      presentation/
+  core/
+test/
+```
+
+## How to Contribute
+
+- Fork the repo
+- Create a feature branch
+- Submit a pull request

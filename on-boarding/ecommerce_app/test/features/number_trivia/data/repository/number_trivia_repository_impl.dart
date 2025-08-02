@@ -1,5 +1,7 @@
 import 'package:ecommerce_app/core/platform/network_info.dart';
+import 'package:ecommerce_app/features/number_trivia/data/models/number_trivia_model.dart';
 import 'package:mockito/mockito.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:ecommerce_app/features/number_trivia/data/datasources/number_trivia_local_datasource.dart';
 import 'package:ecommerce_app/features/number_trivia/data/datasources/number_trivia_remote_datasource.dart';
 import 'package:ecommerce_app/features/number_trivia/data/repository/number_trivia_repository_impl.dart';
@@ -14,8 +16,8 @@ void main(){
   MockRemoteDataSource mockRemoteDataSource;
   MockLocalDataSource mockLocalDataSource;
   MockNetworkInfo mockNetworkInfo;
-
-  setUp(){
+  NumberTriviaModel tNumberTriviaModel;
+  setUp((){
     mockLocalDataSource = MockLocalDataSource();
     mockRemoteDataSource = MockRemoteDataSource();
     mockNetworkInfo = MockNetworkInfo();
@@ -24,6 +26,20 @@ void main(){
       localDataSource:mockLocalDataSource,
       networkInfo:mockNetworkInfo
     );
+  });
 
-  }
+  group("testing the repository implementation", 
+  (){
+    test("should check online or not", ()async{
+      when(mockNetworkInfo.isConnected).thenAnswer((_)async =>true);
+      repositoryImpl.getConcreteNUmberTrivia(1);
+      verify(mockNetworkInfo.isConnected);
+    });
+
+    test("return remote data",
+    ()async{
+      when(mockRemoteDataSource.getConcreteNUmberTrivia(any)).thenAnswer((_)async =>tNumberTriviaModel);
+
+    });
+  });
 }
