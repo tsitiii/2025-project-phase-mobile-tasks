@@ -3,7 +3,7 @@ import 'package:ecommerce_app/features/product/data/datasources/product_local_da
 import 'package:ecommerce_app/features/product/data/datasources/product_remote_datasource.dart';
 
 import '../../../../core/error/failures.dart';
-import '../../../../core/platform/network_info.dart';
+import '../../../../core/network/network_info.dart';
 import '../../../../product.dart';
 import '../../domain/repositories/product_repository.dart';
 
@@ -19,18 +19,34 @@ class ProductRepositoryImpl implements ProductRepository{
 
   Future<Either<Failure, void>> addProduct(Product product) async{
     
-  } 
-  Future<Either<Failure, List<Product>>> getAllProduct(){
-      if (networkInfo.isConnected) {
+  }
+
+  
+  Future<Either<Failure, List<Product>>> getAllProduct() async{
+      if (await networkInfo.isConnected) {
       final products =  await remoteDatasource.fetchProducts();
       await localDatasource.cacheProducts(products);
-      return products;
+      return Right(products.map(model)=>model.toEntity()).toList();
     }
     else{
       final cahedproducts = await localDatasource.cahedProducts();
       return cahedproducts;
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   Future<Either<Failure, void>> updateProduct(Product product){
 
   }
