@@ -23,4 +23,19 @@ class ProductLocalDatasource {
       throw CacheException();
   }
 }
+
+Future<List<ProductModel>> getCachedProducts()async{
+  try{final jsonString = sharedPreferences.getString(CACHED_PRODUCTS_KEY);
+  if(jsonString != null){
+    final jsonList = json.decode(jsonString);
+    return jsonList.map((json)=>ProductModel.fromJson(json)).toList();
+  }
+  else{
+    throw CacheException();
+  }
+  }catch(e){
+    throw CacheException();
+  }
+
+}
 }

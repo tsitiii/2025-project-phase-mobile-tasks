@@ -1,10 +1,21 @@
 import 'package:ecommerce_app/addProduct.dart';
 import 'package:flutter/material.dart';
 
+import 'features/product/domain/entities/product.dart';
 import 'search.dart';
 
-class Product extends StatelessWidget {
-  Product({super.key});
+class ProductUI extends StatefulWidget {
+  ProductUI({super.key});
+
+  @override
+  State<ProductUI> createState() => _ProductUIState();
+}
+
+class _ProductUIState extends State<ProductUI> {
+  List<Product> products = [];
+  bool isLoading = true;
+  String? errorMessage;
+ 
 
   final List<Map<String, dynamic>> productlist = [
     {
@@ -88,24 +99,24 @@ class Product extends StatelessWidget {
         backgroundColor: Colors.white10,
         elevation: 1,
         leading: Container(
-          margin: EdgeInsets.all(8),
-          child: CircleAvatar(
+          margin: const EdgeInsets.all(8),
+          child: const CircleAvatar(
             backgroundColor: Colors.blueGrey,
             child: Icon(Icons.person, color: Colors.pinkAccent),
           ),
         ),
         title: Row(
           children: [
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
+                  const Row(
                     children: [
                       Text("Hello", style: TextStyle(fontSize: 17)),
-                      const SizedBox(width: 5),
+                      SizedBox(width: 5),
                       Text(
                         'Tsiyon Gashaw',
                         style: TextStyle(
@@ -132,7 +143,7 @@ class Product extends StatelessWidget {
               border: Border.all(width: 1, color: Colors.blueGrey),
             ),
             child: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.notifications_none_rounded,
                 color: Colors.black54,
               ),
@@ -151,7 +162,7 @@ class Product extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
+                    const Text(
                       "Avaialable products",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -169,11 +180,13 @@ class Product extends StatelessWidget {
                       child: IconButton(
                         iconSize: 25,
                         color: Colors.grey,
-                        icon: Icon(Icons.search_outlined),
+                        icon: const Icon(Icons.search_outlined),
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Search()),
+                            MaterialPageRoute(
+                              builder: (context) => const Search(),
+                            ),
                           );
                         },
                       ),
@@ -183,7 +196,7 @@ class Product extends StatelessWidget {
               ),
               GridView.builder(
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: productlist.length,
                 itemBuilder: (context, index) {
                   final product = productlist[index];
@@ -237,7 +250,7 @@ class Product extends StatelessWidget {
                                   children: [
                                     Text(
                                       product["title"]!,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
                                       ),
@@ -250,7 +263,7 @@ class Product extends StatelessWidget {
                                       children: [
                                         Text(
                                           "\$${product["price"]}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             color: Colors.green,
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -258,14 +271,16 @@ class Product extends StatelessWidget {
                                         ),
                                         Row(
                                           children: [
-                                            Icon(
+                                            const Icon(
                                               Icons.star,
                                               color: Colors.orange,
                                               size: 16,
                                             ),
                                             Text(
                                               "${product["rating"]}",
-                                              style: TextStyle(fontSize: 12),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -281,7 +296,7 @@ class Product extends StatelessWidget {
                     ),
                   );
                 },
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 1,
                   mainAxisSpacing: 20,
                   crossAxisSpacing: 10,
@@ -296,13 +311,13 @@ class Product extends StatelessWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Addproduct()),
+            MaterialPageRoute(builder: (context) => const Addproduct()),
           );
         },
         backgroundColor: Colors.blueAccent,
         foregroundColor: Colors.white,
-        shape: CircleBorder(),
-        child: Icon(Icons.add),
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add),
       ),
     );
   }

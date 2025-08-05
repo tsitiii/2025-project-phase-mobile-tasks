@@ -7,14 +7,14 @@ void main() {
     description: "mock description",
     productId: 1,
     price: 23.0,
-    imageURL: "image/path",
+    imageUrl: "image/path",
   );
 
   final productJson = {
     'description': "mock description",
     'id': 1,
     'price': 23.0,
-    'imageURL': "image/path",
+    'imageUrl': "image/path",
   };
 
   group('Test ProductModel', () {
@@ -27,7 +27,7 @@ void main() {
       expect(result.description, equals("mock description"));
       expect(result.id, equals(1));
       expect(result.price, equals(23.0));
-      expect(result.imageURL, equals("image/path"));
+      expect(result.imageUrl, equals("image/path"));
     });
 
     test('toJson should return a valid JSON map', () {

@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: "/",
       routes: {
-        '/': (context) => Product(),
+        '/': (context) => ProductUI(),
         '/product': (context) => Productdetail(),
         '/search': (context) => Search(),
       },
