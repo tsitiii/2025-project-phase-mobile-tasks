@@ -57,12 +57,12 @@ Future<Either<Failure, List<Product>>> getAllProduct() async {
       )).toList();
       return Right(products);
     } on CacheException catch (_) {
-      return Left(ServerFailure());
+      return Left(ServerFailure(message: ''));
     }
   } on CacheException catch (_) {
-    return Left(CacheFailure());
+    return Left(CacheFailure(message: ''));
   } catch (e) {
-    return Left(ServerFailure());
+    return Left(ServerFailure(message: ''));
   }
 }
 
@@ -82,10 +82,10 @@ Future<Either<Failure, List<Product>>> getAllProduct() async {
           return const Right(null);
       }
       else{
-        return Left(ServerFailure());
+        return Left(ServerFailure(message: ''));
       }
     } catch (e) {
-      return Left(ServerFailure());
+      return Left(ServerFailure(message: ''));
     }
   }
 

@@ -56,3 +56,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState>{
     }
   }
 }
+
+class ConnectionFailure {
+}

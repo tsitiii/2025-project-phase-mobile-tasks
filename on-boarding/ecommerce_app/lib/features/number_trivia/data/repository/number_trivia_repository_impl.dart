@@ -7,25 +7,24 @@ import '../../domain/entities/number_trivia.dart';
 import '../datasources/number_trivia_local_datasource.dart';
 import '../datasources/number_trivia_remote_datasource.dart';
 
-class NumberTriviaRepositoryImpl implements NumberTriviaRepository{
-    final NumberTriviaLocalDatasource localDatasource;
-    final NumberTriviaRemoteDatasource remoteDatasource;
-    final NetworkInfo networkInfo;
+class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
+  final NumberTriviaLocalDatasource localDatasource;
+  final NumberTriviaRemoteDatasource remoteDatasource;
+  final NetworkInfo networkInfo;
 
   NumberTriviaRepositoryImpl({
-      required this.localDatasource,
-      required this.remoteDatasource,
-      required this.networkInfo,
-    });
+    required this.localDatasource,
+    required this.remoteDatasource,
+    required this.networkInfo,
+  });
 
-  Future<Either<Failure,NumberTrivia>> getConcreteNUmberTrivia(dynamic num) async {
-   
-
-    return Future.value(Left(ServerFailure()));
+  Future<Either<Failure, NumberTrivia>> getConcreteNUmberTrivia(
+    dynamic num,
+  ) async {
+    return Future.value(Left(ServerFailure(message: 'error')));
   }
 
   Future<Either<Failure, NumberTrivia>> getRandomNumberTrivia() async {
-
-    return Future.value(Left(ServerFailure()));
+    return Future.value(Left(ServerFailure(message: 'error')));
   }
 }

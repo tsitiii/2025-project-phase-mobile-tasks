@@ -19,6 +19,6 @@ class InputConverter {
 
 }
 
-class InvalidInputFailure extends Failure{
-  
+class InvalidInputFailure extends Failure {
+  const InvalidInputFailure([String message = 'Invalid Input']) : super(message);
 }
