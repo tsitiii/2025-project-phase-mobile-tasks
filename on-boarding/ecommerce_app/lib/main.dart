@@ -2,10 +2,10 @@ import 'package:ecommerce_app/productDetail.dart';
 import 'package:ecommerce_app/search.dart';
 import 'package:flutter/material.dart';
 
-import 'features/chat/presentation/pages/chat_screen.dart';
 import 'features/auth/presentation/pages/signin_screen.dart';
 import 'features/auth/presentation/pages/signup_screen.dart';
 import 'features/auth/presentation/pages/splash_screen.dart';
+import 'features/chat/presentation/pages/chat_screen.dart';
 import 'injection_container.dart' as di;
 import 'product.dart';
 

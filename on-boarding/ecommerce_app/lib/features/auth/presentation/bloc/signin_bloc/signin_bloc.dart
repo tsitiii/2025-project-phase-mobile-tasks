@@ -1,10 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../domain/usecases/signin_usecase.dart';
+import '../../../domain/entities/signup_entity.dart';
 import 'signin_event.dart';
 import 'signin_state.dart';
 
 class SigninBloc extends Bloc<SigninEvent, SigninState> {
-  SigninBloc() : super(const SigninFormState(isPasswordVisible: false)) {
+  final SigninUsecase signinUsecase;
+
+  SigninBloc({required this.signinUsecase})
+      : super(const SigninFormState(isPasswordVisible: false)) {
     on<SigninSubmitted>(_onSigninSubmitted);
     on<TogglePasswordVisibility>(_onTogglePasswordVisibility);
   }
@@ -14,20 +19,27 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
     Emitter<SigninState> emit,
   ) async {
     emit(SigninLoading());
-
     try {
-      await Future.delayed(const Duration(seconds: 2));
+      final credentials = SignupEntity(
+        name: '',
+        email: event.email,
+        password: event.password,
+      );
 
-      // TODO: Add your actual signin API call here
-      // final result = await authRepository.signIn(
-      //   email: event.email,
-      //   password: event.password,
-      // );
+      final result = await signinUsecase.call(credentials);
+      result.fold(
+        (failure) {
+          emit(SigninError(message: failure.message));
+        },
+        (token) {
+          emit(const SigninSuccess(message: "Welcome! Sign in successful"));
+        },
+      );
 
-      emit(const SigninSuccess(message: "Welcome! Sign in successful"));
     } catch (error) {
-      emit(SigninError(message: error.toString()));
+      emit(SigninError(message: "An unexpected error occurred: ${error.toString()}"));
     }
+    
   }
 
   void _onTogglePasswordVisibility(

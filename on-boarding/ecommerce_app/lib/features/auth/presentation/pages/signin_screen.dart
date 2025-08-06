@@ -1,6 +1,14 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../core/network/network_info.dart';
+import '../../data/datasources/user_local_datasource.dart';
+import '../../data/datasources/user_remote_datasource.dart';
+import '../../data/repository/signin_repository_impl.dart';
+import '../../domain/usecases/signin_usecase.dart';
 import '../bloc/signin_bloc/signin_bloc.dart';
 import '../bloc/signin_bloc/signin_event.dart';
 import '../bloc/signin_bloc/signin_state.dart';
@@ -26,220 +34,309 @@ class _SigninPageState extends State<SigninPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SigninBloc(),
-      child: BlocListener<SigninBloc, SigninState>(
-        listener: (context, state) {
-          if (state is SigninSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.greenAccent,
-              ),
-            );
-            Navigator.pushReplacementNamed(context, '/chat');
-          }
-          if (state is SigninError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.redAccent,
-              ),
-            );
-          }
-        },
-        child: BlocBuilder<SigninBloc, SigninState>(
-          builder: (context, state) {
-            bool isPasswordVisible = false;
-            bool isLoading = state is SigninLoading;
-            if (state is SigninFormState) {
-              isPasswordVisible = state.isPasswordVisible;
-            }
-            return Scaffold(
-              body: SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 40),
+    return FutureBuilder<SigninBloc>(
+      future: _createSigninBloc(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-                      Container(
-                        width: 100,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.blueAccent,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Center(
-                            child: Text(
-                              "ECOM",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 15, 83, 201),
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                              ),
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error, color: Colors.red, size: 64),
+                  const SizedBox(height: 16),
+                  Text('Error: ${snapshot.error}'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => setState(() {}),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return BlocProvider<SigninBloc>(
+          create: (context) => snapshot.data!,
+          child: _buildSigninUI(),
+        );
+      },
+    );
+  }
+
+  Future<SigninBloc> _createSigninBloc() async {
+    try {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final connectivity = Connectivity();
+      final httpClient = http.Client();
+      final networkInfo = NetworkInfoImpl(connectivityChecker: connectivity);
+      final userLocalDatasource = UserLocalDatasourceImpl(
+        sharedPreferences: sharedPreferences,
+      );
+      final userRemoteDatasource = UserRemoteDatasourceImpl(client: httpClient);
+      final signinRepository = SigninRepositoryImpl(
+        userLocalDatasource: userLocalDatasource,
+        userRemoteDatasource: userRemoteDatasource,
+        networkInfo: networkInfo,
+      );
+
+      final signinUsecase = SigninUsecase(signinRepository: signinRepository);
+
+      return SigninBloc(signinUsecase: signinUsecase);
+    } catch (e) {
+      throw Exception('Failed to initialize signin functionality: $e');
+    }
+  }
+
+  Widget _buildSigninUI() {
+    return BlocListener<SigninBloc, SigninState>(
+      listener: (context, state) {
+        if (state is SigninSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          Navigator.pushReplacementNamed(context, '/chat');
+        }
+
+        if (state is SigninError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<SigninBloc, SigninState>(
+        builder: (context, state) {
+          bool isPasswordVisible = false;
+          bool isLoading = state is SigninLoading;
+
+          if (state is SigninFormState) {
+            isPasswordVisible = state.isPasswordVisible;
+          }
+
+          return Scaffold(
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 40),
+
+                    Container(
+                      width: 100,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.blueAccent),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            "ECOM",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 15, 83, 201),
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
+                    ),
 
-                      const SizedBox(height: 30),
+                    const SizedBox(height: 30),
 
-                      const Text(
-                        "Sign into Your account",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 23,
-                        ),
+                    // Title
+                    const Text(
+                      "Sign into Your account",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 23,
                       ),
+                    ),
 
-                      const SizedBox(height: 30),
+                    const SizedBox(height: 30),
 
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Email Section
-                              const Text(
-                                "Email",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
+                    // Form
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Email Section
+                            const Text(
+                              "Email",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 17,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextFormField(
+                              controller: _emailController,
+                              enabled: !isLoading,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please enter your email";
+                                }
+                                if (!RegExp(
+                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                ).hasMatch(value)) {
+                                  return "Please enter a valid email";
+                                }
+                                return null;
+                              },
+                              decoration: const InputDecoration(
+                                hintText: "ex: tsion@gmail.com",
+                                hintStyle: TextStyle(color: Colors.grey),
+                                border: OutlineInputBorder(),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
                                 ),
                               ),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Please enter your email";
-                                  }
-                                },
-                                controller: _emailController,
-                                decoration: const InputDecoration(
-                                  hintText: "ex: tsion@gmail.com",
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  border: OutlineInputBorder(),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 12,
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            // Password Section
+                            const Text(
+                              "Password",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 17,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextFormField(
+                              controller: _passwordController,
+                              enabled: !isLoading,
+                              obscureText: !isPasswordVisible,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please enter your password";
+                                }
+                                if (value.length < 6) {
+                                  return "Password must be at least 6 characters";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                hintText: "Enter your password",
+                                hintStyle: const TextStyle(color: Colors.grey),
+                                border: const OutlineInputBorder(),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    isPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Colors.grey,
                                   ),
-                                ),
-                              ),
-
-                              const SizedBox(height: 20),
-                              const Text(
-                                "Password",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Please enter your password";
-                                  }
-                                },
-                                controller: _passwordController,
-                                obscureText: !isPasswordVisible,
-                                decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 12,
-                                  ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      isPasswordVisible
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                      color: Colors.grey,
-                                    ),
-                                    onPressed: () {
-                                      context.read<SigninBloc>().add(
-                                        TogglePasswordVisibility(),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-
-                              const SizedBox(height: 30),
-
-                              SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: ElevatedButton(
                                   onPressed:
                                       !isLoading
-                                          ? () => _handleSignIn(context)
+                                          ? () {
+                                            context.read<SigninBloc>().add(
+                                              TogglePasswordVisibility(),
+                                            );
+                                          }
                                           : null,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blueAccent,
-                                    foregroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child:
-                                      isLoading
-                                          ? const CircularProgressIndicator(
-                                            color: Colors.pinkAccent,
-                                          )
-                                          : const Text(
-                                            "SIGN IN",
-                                            style: TextStyle(
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
                                 ),
                               ),
+                            ),
 
-                              const SizedBox(height: 30),
+                            const SizedBox(height: 30),
 
-                              Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      "Don't have an account? ",
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.pushNamed(context, '/signup');
-                                      },
-                                      child: const Text(
-                                        "SIGN UP",
-                                        style: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontWeight: FontWeight.bold,
+                            // Sign In Button
+                            SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed:
+                                    !isLoading
+                                        ? () => _handleSignIn(context)
+                                        : null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blueAccent,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                child:
+                                    isLoading
+                                        ? const CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        )
+                                        : const Text(
+                                          "SIGN IN",
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
+                              ),
+                            ),
+
+                            const SizedBox(height: 30),
+                            Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "Don't have an account? ",
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                  GestureDetector(
+                                    onTap:
+                                        !isLoading
+                                            ? () {
+                                              Navigator.pushNamed(
+                                                context,
+                                                '/signup',
+                                              );
+                                            }
+                                            : null,
+                                    child: const Text(
+                                      "SIGN UP",
+                                      style: TextStyle(
+                                        color: Colors.blueAccent,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -248,7 +345,7 @@ class _SigninPageState extends State<SigninPage> {
     if (_formKey.currentState!.validate()) {
       context.read<SigninBloc>().add(
         SigninSubmitted(
-          email: _emailController.text,
+          email: _emailController.text.trim(),
           password: _passwordController.text,
         ),
       );

@@ -16,6 +16,12 @@ class UserModel extends SignupEntity {
   }
 
   Map<String, dynamic> toJson() {
-    return {'name': name, 'email': email, 'password': password};
+    final json = <String, dynamic>{'email': email, 'password': password};
+
+    if (name.isNotEmpty) {
+      json['name'] = name;
+    }
+
+    return json;
   }
 }

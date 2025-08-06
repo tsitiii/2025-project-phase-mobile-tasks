@@ -6,5 +6,5 @@ import '../../../../core/error/failures.dart';
 import '../entities/signup_entity.dart';
 
 abstract class SigninRepository {
-  Future<Either<Failure,SignupEntity>> signin(SignupEntity credentials);
+  Future<Either<Failure,String>> signin(SignupEntity credentials);
 }

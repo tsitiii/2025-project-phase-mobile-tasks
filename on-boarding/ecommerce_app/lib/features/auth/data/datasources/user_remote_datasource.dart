@@ -6,7 +6,7 @@ import '../models/user_model.dart';
 
 abstract class UserRemoteDatasource {
   Future<UserModel> signUp(UserModel user);
-  Future<UserModel> signIn(String email, String password);
+  Future<String> signIn(UserModel user);
 }
 
 class UserRemoteDatasourceImpl implements UserRemoteDatasource {
@@ -19,27 +19,21 @@ class UserRemoteDatasourceImpl implements UserRemoteDatasource {
   @override
   Future<UserModel> signUp(UserModel user) async {
     try {
-      print(' Attempting signup to: $baseUrl/auth/register');
-      print(' Request body: ${json.encode(user.toJson())}');
-
       final response = await client.post(
         Uri.parse('$baseUrl/api/v2/auth/register'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(user.toJson()),
       );
 
-      print(' Response status: ${response.statusCode}');
-      print(' Response body: ${response.body}');
-      print(' Response headers: ${response.headers}');
-
       if (response.statusCode == 201 || response.statusCode == 200) {
         final responseData = json.decode(response.body);
         final userData = responseData['data'] ?? responseData;
 
         return UserModel(
-        name: userData['name'],
-        email: userData['email'],
-        password: '');
+          name: userData['name'],
+          email: userData['email'],
+          password: '',
+        );
       } else {
         final errorData = json.decode(response.body);
         final errorMessage = errorData['message'] ?? 'Sign up failed';
@@ -53,30 +47,49 @@ class UserRemoteDatasourceImpl implements UserRemoteDatasource {
     }
   }
 
-
-
-
   @override
-  Future<UserModel> signIn(String email, String password) async {
+  Future<String> signIn(UserModel userModel) async {
     try {
+      final requestBody = userModel.toJson();
       final response = await client.post(
-        Uri.parse('$baseUrl/auth/signin'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({'email': email, 'password': password}),
+        Uri.parse('$baseUrl/api/v2/auth/login'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: json.encode(requestBody),
       );
 
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        final userData = responseData['data'] ?? responseData;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        try {
+          final responseData = json.decode(response.body);
+          final accessToken = responseData['data']['access_token'];
+          if (accessToken == null || accessToken.toString().isEmpty) {
+            throw Exception('No access token found in response');
+          }
 
-        return UserModel.fromJson(userData);
+          return accessToken.toString();
+        } catch (jsonError) {
+          throw Exception('Invalid JSON response: $jsonError');
+        }
       } else {
-        final errorData = json.decode(response.body);
-        final errorMessage = errorData['message'] ?? 'Sign in failed';
-        throw Exception('Sign in failed: $errorMessage');
+        try {
+          final errorData = json.decode(response.body);
+          final errorMessage =
+              errorData['message'] ??
+              errorData['error'] ??
+              'Sign in failed with status ${response.statusCode}';
+          throw Exception('Sign in failed: $errorMessage');
+        } catch (jsonError) {
+          throw Exception('Sign in failed with status ${response.statusCode}');
+        }
       }
     } catch (e) {
-      throw Exception('Network error during sign in: $e');
+      if (e.toString().startsWith('Exception: Sign in failed:')) {
+        rethrow;
+      } else {
+        throw Exception('Network error during sign in: $e');
+      }
     }
   }
 }

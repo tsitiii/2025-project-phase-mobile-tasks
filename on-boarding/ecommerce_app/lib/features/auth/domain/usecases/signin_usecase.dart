@@ -9,7 +9,7 @@ class SigninUsecase {
   final SigninRepository signinRepository;
   SigninUsecase({required this.signinRepository});
 
-  Future<Either<Failure,SignupEntity>> call(SignupEntity credentials)async{
+  Future<Either<Failure,String>> call(SignupEntity credentials)async{
     return signinRepository.signin( credentials);
   }
 }
