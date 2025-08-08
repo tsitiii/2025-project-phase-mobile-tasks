@@ -15,37 +15,29 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl({
     required this.networkInfo,
     required this.remoteDatasource,
-  }); // ✅ Removed localDatasource dependency
-
+  });
   @override
   Future<Either<Failure, List<Product>>> getAllProduct() async {
-    print('🔍 Repository: Starting getAllProduct...');
-
     try {
       if (await networkInfo.isConnected) {
-        print('🌐 Network connected - fetching from remote...');
-
         final List<ProductModel> remoteProducts =
             await remoteDatasource.getAllProducts();
-        print('✅ Remote fetch successful: ${remoteProducts.length} products');
 
-        // ✅ No caching - just return the products directly
-        final List<Product> products = remoteProducts
-            .map(
-              (model) => Product(
-                id: model.id,
-                name: model.name ?? '',
-                description: model.description ?? '',
-                price: model.price ?? 0.0,
-                imageUrl: model.imageUrl ?? '',
-              ),
-            )
-            .toList();
+        final List<Product> products =
+            remoteProducts
+                .map(
+                  (model) => Product(
+                    id: model.id,
+                    name: model.name ?? '',
+                    description: model.description ?? '',
+                    price: model.price ?? 0.0,
+                    imageUrl: model.imageUrl ?? '',
+                  ),
+                )
+                .toList();
 
-        print('🎉 Repository: Returning ${products.length} products');
         return Right(products);
       } else {
-        print('❌ No network connection');
         return Left(
           ServerFailure(
             message: 'No internet connection. Please check your connection.',
@@ -53,14 +45,10 @@ class ProductRepositoryImpl implements ProductRepository {
         );
       }
     } on ServerException catch (e) {
-      print('🚨 ServerException caught: $e');
       return Left(
-        ServerFailure(
-          message: 'Unable to load products. Please try again.',
-        ),
+        ServerFailure(message: 'Unable to load products. Please try again.'),
       );
     } catch (e) {
-      print('❌ Unexpected error: $e');
       return Left(
         ServerFailure(message: 'An unexpected error occurred: ${e.toString()}'),
       );
@@ -69,8 +57,6 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<Either<Failure, void>> addProduct(Product product) async {
-    print('➕ Repository: Adding product...');
-
     try {
       if (await networkInfo.isConnected) {
         final ProductModel productModel = ProductModel(
@@ -82,12 +68,9 @@ class ProductRepositoryImpl implements ProductRepository {
         );
 
         await remoteDatasource.addProduct(productModel);
-        print('✅ Product added to remote successfully');
 
-        // ✅ No cache update needed
         return const Right(null);
       } else {
-        print('❌ No network connection for adding product');
         return Left(
           ServerFailure(
             message: 'No internet connection. Please try again when connected.',
@@ -95,12 +78,8 @@ class ProductRepositoryImpl implements ProductRepository {
         );
       }
     } on ServerException catch (e) {
-      print('❌ Server error adding product: $e');
-      return Left(
-        ServerFailure(message: 'Failed to add product to server'),
-      );
+      return Left(ServerFailure(message: 'Failed to add product to server'));
     } catch (e) {
-      print('❌ Unexpected error adding product: $e');
       return Left(
         ServerFailure(message: 'Failed to add product: ${e.toString()}'),
       );
@@ -109,8 +88,6 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<Either<Failure, void>> updateProduct(Product product) async {
-    print('🔄 Repository: Updating product...');
-
     try {
       if (await networkInfo.isConnected) {
         final ProductModel productModel = ProductModel(
@@ -122,12 +99,9 @@ class ProductRepositoryImpl implements ProductRepository {
         );
 
         await remoteDatasource.updateProduct(productModel);
-        print('✅ Product updated on remote successfully');
 
-        // ✅ No cache update needed
         return const Right(null);
       } else {
-        print('❌ No network connection for updating product');
         return Left(
           ServerFailure(
             message: 'No internet connection. Please try again when connected.',
@@ -135,12 +109,8 @@ class ProductRepositoryImpl implements ProductRepository {
         );
       }
     } on ServerException catch (e) {
-      print('❌ Server error updating product: $e');
-      return Left(
-        ServerFailure(message: 'Failed to update product on server'),
-      );
+      return Left(ServerFailure(message: 'Failed to update product on server'));
     } catch (e) {
-      print('❌ Unexpected error updating product: $e');
       return Left(
         ServerFailure(message: 'Failed to update product: ${e.toString()}'),
       );
@@ -149,17 +119,12 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<Either<Failure, void>> deleteProduct(String id) async {
-    print('🗑️ Repository: Deleting product with ID: $id');
-
     try {
       if (await networkInfo.isConnected) {
         await remoteDatasource.deleteProduct(id);
-        print('✅ Product deleted from remote successfully');
 
-        // ✅ No cache update needed
         return const Right(null);
       } else {
-        print('❌ No network connection for deleting product');
         return Left(
           ServerFailure(
             message: 'No internet connection. Please try again when connected.',
@@ -167,12 +132,10 @@ class ProductRepositoryImpl implements ProductRepository {
         );
       }
     } on ServerException catch (e) {
-      print('❌ Server error deleting product: $e');
       return Left(
         ServerFailure(message: 'Failed to delete product from server'),
       );
     } catch (e) {
-      print('❌ Unexpected error deleting product: $e');
       return Left(
         ServerFailure(message: 'Failed to delete product: ${e.toString()}'),
       );
@@ -181,13 +144,9 @@ class ProductRepositoryImpl implements ProductRepository {
 
   @override
   Future<Either<Failure, Product>> getProduct(String id) async {
-    print('🔍 Repository: Getting product with ID: $id');
-
     try {
       if (await networkInfo.isConnected) {
-        final ProductModel productModel =
-            await remoteDatasource.getProduct(id);
-        print('✅ Product fetched from remote successfully');
+        final ProductModel productModel = await remoteDatasource.getProduct(id);
 
         final Product product = Product(
           id: productModel.id,
@@ -199,7 +158,7 @@ class ProductRepositoryImpl implements ProductRepository {
 
         return Right(product);
       } else {
-        print('❌ No network connection');
+        print('No network connection');
         return Left(
           ServerFailure(
             message: 'No internet connection. Please check your connection.',
@@ -207,12 +166,8 @@ class ProductRepositoryImpl implements ProductRepository {
         );
       }
     } on ServerException catch (e) {
-      print('🚨 ServerException caught: $e');
-      return Left(
-        ServerFailure(message: 'Product not found or server error'),
-      );
+      return Left(ServerFailure(message: 'Product not found or server error'));
     } catch (e) {
-      print('❌ Unexpected error: $e');
       return Left(
         ServerFailure(message: 'An unexpected error occurred: ${e.toString()}'),
       );

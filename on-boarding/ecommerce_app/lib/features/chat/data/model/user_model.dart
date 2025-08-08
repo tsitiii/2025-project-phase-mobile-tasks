@@ -15,7 +15,7 @@ class UserModel extends UserEntity {
     );
   }
 
-  // ✅ To JSON (for caching)
+  
   Map<String, dynamic> toJson() {
     return {
       '_id': id,

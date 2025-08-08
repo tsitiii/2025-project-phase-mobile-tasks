@@ -21,7 +21,7 @@ class ProductModel extends Product {
       id: json['id'] ?? '',
       price:
           (json['price'] as num?)?.toDouble() ??
-          0.0, // ✅ Parse as number from API
+          0.0, 
       imageUrl: json['imageUrl'] ?? '',
       name: json['name'] ?? '',
     );
@@ -31,7 +31,7 @@ class ProductModel extends Product {
     return {
       'description': description,
       'id': id,
-      'price': price.toString(), // ✅ Send as string to API
+      'price': price.toString(),
       'imageUrl': imageUrl,
       'name': name,
     };

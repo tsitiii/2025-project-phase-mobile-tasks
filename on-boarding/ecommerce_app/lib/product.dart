@@ -90,8 +90,8 @@ class _ProductUIState extends State<ProductUI> {
                         ),
                         Text(
                           userState is UserLoaded
-                              ? 'Welcome back!' // ✅ Dynamic message when user is loaded
-                              : 'Loading...', // ✅ Loading message
+                              ? 'Welcome back!'
+                              : 'Loading...', 
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],
@@ -125,9 +125,7 @@ class _ProductUIState extends State<ProductUI> {
 
         body: BlocBuilder<ProductBloc, ProductState>(
           builder: (context, state) {
-            print('🔍 Current BLoC State: ${state.runtimeType}');
-
-            // ✅ Loading State
+            
             if (state is ProductLoading) {
               return const Center(
                 child: Column(
@@ -187,10 +185,8 @@ class _ProductUIState extends State<ProductUI> {
               );
             }
 
-            // ✅ Success State - Display API Products
             if (state is ProductLoaded) {
               final products = state.products;
-              print('✅ Displaying ${products.length} products from API');
 
               if (products.isEmpty) {
                 return const Center(
@@ -263,7 +259,6 @@ class _ProductUIState extends State<ProductUI> {
                           ],
                         ),
                       ),
-                      // ✅ GridView with Real API Data
                       GridView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -290,7 +285,6 @@ class _ProductUIState extends State<ProductUI> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // ✅ Product Image from API
                                     Expanded(
                                       flex: 3,
                                       child: Container(
@@ -350,7 +344,6 @@ class _ProductUIState extends State<ProductUI> {
                                         ),
                                       ),
                                     ),
-                                    // ✅ Product Details from API
                                     Expanded(
                                       flex: 1,
                                       child: Padding(

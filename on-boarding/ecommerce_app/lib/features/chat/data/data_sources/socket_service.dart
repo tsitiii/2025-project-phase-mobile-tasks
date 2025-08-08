@@ -6,7 +6,7 @@ class SocketService {
 
   void connect() async{
       final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('AUTH_TOKEN'); // ✅ Using your key name
+    final token = prefs.getString('AUTH_TOKEN'); 
 
 
     if (token == null) {
@@ -24,19 +24,19 @@ class SocketService {
     );
 
     socket.onConnect((_) {
-      print('✅ Socket connected');
+      print('Socket connected');
     });
 
     socket.onDisconnect((_) {
-      print('❌ Socket disconnected');
+      print(' Socket disconnected');
     });
 
     socket.onConnectError((err) {
-      print('⚠️ Connect Error: $err');
+      print(' Connect Error: $err');
     });
 
     socket.onError((err) {
-      print('🔥 Socket Error: $err');
+      print('Socket Error: $err');
     });
 
     socket.connect();

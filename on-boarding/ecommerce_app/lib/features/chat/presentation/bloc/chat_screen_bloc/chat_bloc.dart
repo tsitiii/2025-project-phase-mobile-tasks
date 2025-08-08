@@ -9,7 +9,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<LoadChats>(_onLoadChats);
     on<RefreshChats>(_onRefreshChats);
   }
-
+    // dummy chats for testing how the bloc handles socket and UI
   final List<ChatEntity> _mockChats = [
     ChatEntity(
       id: '1',

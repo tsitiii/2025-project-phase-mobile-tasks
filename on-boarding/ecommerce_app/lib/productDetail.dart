@@ -54,7 +54,7 @@ class Productdetail extends StatelessWidget {
                   duration: const Duration(seconds: 2),
                 ),
               );
-              Navigator.pop(context); // Go back to home page
+              Navigator.pop(context); 
             }
 
             if (state is ProductError) {

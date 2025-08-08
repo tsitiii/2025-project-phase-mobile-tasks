@@ -26,12 +26,11 @@ class _AddproductState extends State<Addproduct> {
   final _descriptionController = TextEditingController();
 
   File? _image;
-  Product? _existingProduct; // ✅ ADD THIS
-  bool _isUpdateMode = false; // ✅ ADD THIS
+  Product? _existingProduct;
+  bool _isUpdateMode = false;
 
   @override
   void didChangeDependencies() {
-    // ✅ ADD THIS ENTIRE METHOD
     super.didChangeDependencies();
 
     // Check if we received a product (UPDATE mode)
@@ -46,7 +45,6 @@ class _AddproductState extends State<Addproduct> {
   }
 
   void _populateFields() {
-    // ✅ ADD THIS ENTIRE METHOD
     if (_existingProduct != null) {
       _nameController.text = _existingProduct!.name;
       _priceController.text = _existingProduct!.price.toString();
@@ -75,9 +73,7 @@ class _AddproductState extends State<Addproduct> {
             },
             icon: const Icon(Icons.arrow_back),
           ),
-          title: Text(
-            _isUpdateMode ? "Update Product" : "Add Product",
-          ), // ✅ CHANGE THIS LINE
+          title: Text(_isUpdateMode ? "Update Product" : "Add Product"),
           actions: const [],
         ),
         body: BlocConsumer<ProductBloc, ProductState>(
@@ -94,7 +90,6 @@ class _AddproductState extends State<Addproduct> {
             }
 
             if (state is ProductUpdated) {
-              // ✅ ADD THIS ENTIRE BLOCK
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(state.message),
@@ -134,7 +129,7 @@ class _AddproductState extends State<Addproduct> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
-                          child: _buildImageWidget(), // ✅ CHANGE THIS LINE
+                          child: _buildImageWidget(),
                         ),
                       ),
                     ),
@@ -145,7 +140,6 @@ class _AddproductState extends State<Addproduct> {
                       padding: const EdgeInsets.all(13.0),
                       child: Column(
                         children: [
-                          // ✅ Name field
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -184,7 +178,6 @@ class _AddproductState extends State<Addproduct> {
                           ),
                           const SizedBox(height: 15),
 
-                          // ✅ Category field
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -260,7 +253,6 @@ class _AddproductState extends State<Addproduct> {
                           ),
                           const SizedBox(height: 15),
 
-                          // ✅ Description field
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -300,7 +292,6 @@ class _AddproductState extends State<Addproduct> {
                           ),
                           const SizedBox(height: 20),
 
-                          // ✅ Dynamic button (ADD or UPDATE)
                           Container(
                             width: double.infinity,
                             height: 55,
@@ -316,9 +307,7 @@ class _AddproductState extends State<Addproduct> {
                               onPressed:
                                   isLoading
                                       ? null
-                                      : () => _submitProduct(
-                                        context,
-                                      ), // ✅ CHANGE THIS LINE
+                                      : () => _submitProduct(context),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.transparent,
                                 shadowColor: Colors.transparent,
@@ -344,7 +333,7 @@ class _AddproductState extends State<Addproduct> {
                                           Text(
                                             _isUpdateMode
                                                 ? "Updating..."
-                                                : "Adding...", // ✅ CHANGE THIS LINE
+                                                : "Adding...",
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontSize: 18,
@@ -354,9 +343,7 @@ class _AddproductState extends State<Addproduct> {
                                         ],
                                       )
                                       : Text(
-                                        _isUpdateMode
-                                            ? "UPDATE"
-                                            : "ADD", // ✅ CHANGE THIS LINE
+                                        _isUpdateMode ? "UPDATE" : "ADD",
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 18,
@@ -367,7 +354,6 @@ class _AddproductState extends State<Addproduct> {
                           ),
                           const SizedBox(height: 20),
 
-                          // ✅ CLEAR button
                           Container(
                             width: double.infinity,
                             height: 55,
@@ -407,13 +393,10 @@ class _AddproductState extends State<Addproduct> {
     );
   }
 
-  // ✅ ADD THIS ENTIRE METHOD
   Widget _buildImageWidget() {
     if (_image != null) {
-      // Show newly selected image
       return Image.file(_image!, width: 300, height: 150, fit: BoxFit.cover);
     } else if (_isUpdateMode && _existingProduct!.imageUrl.isNotEmpty) {
-      // Show existing network image in update mode
       return Image.network(
         _existingProduct!.imageUrl,
         width: 300,
@@ -435,7 +418,6 @@ class _AddproductState extends State<Addproduct> {
         },
       );
     } else {
-      // Show placeholder
       return const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -447,13 +429,11 @@ class _AddproductState extends State<Addproduct> {
     }
   }
 
-  // ✅ REPLACE _addProduct METHOD WITH THIS
   void _submitProduct(BuildContext context) {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    // For ADD mode, require image. For UPDATE mode, image is optional
     if (!_isUpdateMode && _image == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -476,7 +456,6 @@ class _AddproductState extends State<Addproduct> {
     }
 
     if (_isUpdateMode) {
-      // UPDATE existing product
       final updatedProduct = Product(
         id: _existingProduct!.id, // Keep existing ID
         name: _nameController.text.trim(),
@@ -487,12 +466,10 @@ class _AddproductState extends State<Addproduct> {
             _existingProduct!.imageUrl, // Use new image or keep existing
       );
 
-      print('🔄 Updating product: ${updatedProduct.name}');
       context.read<ProductBloc>().add(
         UpdateProductEvent(product: updatedProduct),
       );
     } else {
-      // ADD new product
       final product = Product(
         id: const Uuid().v4(),
         name: _nameController.text.trim(),
@@ -501,7 +478,6 @@ class _AddproductState extends State<Addproduct> {
         imageUrl: _image!.path,
       );
 
-      print('🆕 Adding product: ${product.name}');
       context.read<ProductBloc>().add(AddProductEvent(product: product));
     }
   }
@@ -559,7 +535,6 @@ class _AddproductState extends State<Addproduct> {
         }
       }
     } catch (e) {
-      print('❌ Error picking image: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error selecting image: ${e.toString()}'),

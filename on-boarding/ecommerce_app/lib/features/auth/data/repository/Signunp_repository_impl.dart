@@ -26,7 +26,6 @@ class SignupRepositoryImpl implements SignupRepository {
     final isConnected = await networkInfo.isConnected;
 
     if (!isConnected) {
-      print('❌ Repository: No network connection detected');
       return const Left(
         NetworkFailure(
           message:
@@ -36,8 +35,6 @@ class SignupRepositoryImpl implements SignupRepository {
     }
 
     try {
-      print('✅ Repository: Network connection confirmed');
-
       final userModel = UserModel(
         name: user.name,
         email: user.email,
@@ -68,13 +65,13 @@ class SignupRepositoryImpl implements SignupRepository {
       );
     } catch (e) {
       final errorMessage = e.toString().toLowerCase();
-      print('💥 Repository: Lowercase error message: $errorMessage');
+      print(' Repository: Lowercase error message: $errorMessage');
 
       if (errorMessage.contains('network error') ||
           errorMessage.contains('connection') ||
           errorMessage.contains('timeout') ||
           errorMessage.contains('socket')) {
-        print('❌ Repository: Classified as network error');
+        print('Repository: Classified as network error');
         return const Left(
           NetworkFailure(
             message: 'Connection problem. Please check your internet.',
@@ -89,12 +86,11 @@ class SignupRepositoryImpl implements SignupRepository {
           ),
         );
       } else if (errorMessage.contains('invalid email')) {
-        print('❌ Repository: Classified as invalid email error');
+        print('Repository: Classified as invalid email error');
         return const Left(
           ServerFailure(message: 'Please provide a valid email address.'),
         );
       } else if (errorMessage.contains('password')) {
-        print('❌ Repository: Classified as password error');
         return const Left(
           ServerFailure(
             message: 'Password does not meet security requirements.',
@@ -107,5 +103,4 @@ class SignupRepositoryImpl implements SignupRepository {
       }
     }
   }
-
 }

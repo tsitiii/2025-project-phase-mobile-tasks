@@ -33,13 +33,12 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   void initState() {
     super.initState();
-    // Load messages when the page opens
     context.read<MessageBloc>().add(GetChatMessagesEvent(widget.chatId));
   }
 
   void _sendMessage() {
     if (_messageController.text.trim().isNotEmpty) {
-      // TODO: Implement sending message via socket
+      
       print('Sending message: ${_messageController.text.trim()}');
       _messageController.clear();
       _scrollToBottom();
