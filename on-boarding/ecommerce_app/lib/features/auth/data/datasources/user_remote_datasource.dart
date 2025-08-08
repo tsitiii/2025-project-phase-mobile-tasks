@@ -52,7 +52,7 @@ class UserRemoteDatasourceImpl implements UserRemoteDatasource {
     try {
       final requestBody = userModel.toJson();
       final response = await client.post(
-        Uri.parse('$baseUrl/api/v2/auth/login'),
+        Uri.parse('$baseUrl/api/v3/auth/login'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -67,7 +67,7 @@ class UserRemoteDatasourceImpl implements UserRemoteDatasource {
           if (accessToken == null || accessToken.toString().isEmpty) {
             throw Exception('No access token found in response');
           }
-
+          print("Access token: $accessToken");
           return accessToken.toString();
         } catch (jsonError) {
           throw Exception('Invalid JSON response: $jsonError');

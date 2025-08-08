@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/usecases/signin_usecase.dart';
 import '../../../domain/entities/signup_entity.dart';
+import '../../../domain/usecases/signin_usecase.dart';
 import 'signin_event.dart';
 import 'signin_state.dart';
 
@@ -9,7 +9,7 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
   final SigninUsecase signinUsecase;
 
   SigninBloc({required this.signinUsecase})
-      : super(const SigninFormState(isPasswordVisible: false)) {
+    : super(const SigninFormState(isPasswordVisible: false)) {
     on<SigninSubmitted>(_onSigninSubmitted);
     on<TogglePasswordVisibility>(_onTogglePasswordVisibility);
   }
@@ -31,15 +31,17 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
         (failure) {
           emit(SigninError(message: failure.message));
         },
-        (token) {
+        (token) async {
           emit(const SigninSuccess(message: "Welcome! Sign in successful"));
         },
       );
-
     } catch (error) {
-      emit(SigninError(message: "An unexpected error occurred: ${error.toString()}"));
+      emit(
+        SigninError(
+          message: "An unexpected error occurred: ${error.toString()}",
+        ),
+      );
     }
-    
   }
 
   void _onTogglePasswordVisibility(

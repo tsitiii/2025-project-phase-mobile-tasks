@@ -1,16 +1,15 @@
-
-class Product{
+class Product {
   String description;
-  int id;
+  String id;
   double price;
   String imageUrl;
+  String name;
 
-  Product(
-    {
-      required this.description,
-      required this.id,
-      required this.price,
-      required this.imageUrl
-    }
-  );
+  Product({
+    required this.description,
+    required this.id,
+    required this.price,
+    required this.imageUrl,
+    required this.name,
+  });
 }

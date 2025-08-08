@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/network/network_info.dart';
+import '../../../chat/data/data_sources/socket_service.dart';
 import '../../data/datasources/user_local_datasource.dart';
 import '../../data/datasources/user_remote_datasource.dart';
 import '../../data/repository/signin_repository_impl.dart';
@@ -21,6 +22,14 @@ class SigninPage extends StatefulWidget {
 }
 
 class _SigninPageState extends State<SigninPage> {
+  final socketService = SocketService();
+
+  @override
+  void initState() {
+    super.initState();
+    socketService.connect();
+  }
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -106,7 +115,8 @@ class _SigninPageState extends State<SigninPage> {
               duration: const Duration(seconds: 2),
             ),
           );
-          Navigator.pushReplacementNamed(context, '/chat');
+
+          Navigator.pushReplacementNamed(context, '/product_ui');
         }
 
         if (state is SigninError) {

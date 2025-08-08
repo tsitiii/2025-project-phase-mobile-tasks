@@ -23,17 +23,9 @@ class SigninRepositoryImpl implements SigninRepository {
 
   @override
   Future<Either<Failure, String>> signin(SignupEntity credentials) async {
-    print('🏪 SigninRepository: signin method called');
-    print('🏪 SigninRepository: Email: ${credentials.email}');
-
-    // ✅ Debug network connectivity
-    print('📡 SigninRepository: Checking network connectivity...');
     try {
       final isConnected = await networkInfo.isConnected;
-      print('📡 SigninRepository: Network connected: $isConnected');
-
       if (!isConnected) {
-        print('❌ SigninRepository: No network connection detected');
         return const Left(
           NetworkFailure(
             message:
@@ -43,26 +35,26 @@ class SigninRepositoryImpl implements SigninRepository {
       }
     } catch (networkError) {
       print('SigninRepository: Network check failed: $networkError');
-      // Continue anyway - maybe network check is broken but internet works
     }
 
     try {
       final userModel = UserModel(
-        name: '', // Empty for signin
+        name: '',
         email: credentials.email,
         password: credentials.password,
       );
       final accessToken = await userRemoteDatasource.signIn(userModel);
       try {
         await userLocalDatasource.saveToken(accessToken);
+        print("Saved access Token: $accessToken");
       } catch (cacheError) {
         print(
           'SigninRepository: Token storage warning (non-critical): $cacheError',
         );
       }
-
-      print('🎉 SigninRepository: Signin process completed successfully!');
+  print("Successfully stored token");
       return Right(accessToken);
+      
     } on SocketException catch (e) {
       print('SigninRepository: SocketException details: $e');
       return const Left(

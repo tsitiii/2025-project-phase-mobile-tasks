@@ -3,22 +3,27 @@ import 'package:ecommerce_app/features/product/domain/entities/product.dart';
 class ProductModel extends Product {
   ProductModel({
     required String description,
-    required int productId,
+    required String id,
     required double price,
     required String imageUrl,
+    required String name,
   }) : super(
-         description: description,
-         id: productId,
-         price: price,
-         imageUrl: imageUrl,
-       );
+          description: description,
+          id: id,
+          price: price,
+          imageUrl: imageUrl,
+          name: name,
+        );
 
-     factory ProductModel.fromJson(Map<String, dynamic> json) {
+  factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
-      description: json['description'],
-      productId: json['id'],
-      price: (json['price'] as num).toDouble(),
-      imageUrl: json['imageURL'],
+      description: json['description'] ?? '',
+      id: json['id'] ?? '',
+      price:
+          (json['price'] as num?)?.toDouble() ??
+          0.0, // ✅ Parse as number from API
+      imageUrl: json['imageUrl'] ?? '',
+      name: json['name'] ?? '',
     );
   }
 
@@ -26,8 +31,9 @@ class ProductModel extends Product {
     return {
       'description': description,
       'id': id,
-      'price': price,
-      'imageURL': imageUrl,
+      'price': price.toString(), // ✅ Send as string to API
+      'imageUrl': imageUrl,
+      'name': name,
     };
   }
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 
 import '../../domain/entities/product.dart';
@@ -12,14 +11,11 @@ abstract class ProductEvent {
 
 class GetAllProductsEvent extends ProductEvent {
   const GetAllProductsEvent();
-  
 }
 
-class AddProductEvent extends ProductEvent{
+class AddProductEvent extends ProductEvent {
   final Product product;
-  const AddProductEvent({
-    required this.product
-  });
+  const AddProductEvent({required this.product});
 
   @override
   List<Object> get props => [product];
@@ -27,18 +23,18 @@ class AddProductEvent extends ProductEvent{
 
 class UpdateProductEvent extends ProductEvent {
   final Product product;
-  
+
   const UpdateProductEvent({required this.product});
-  
+
   @override
   List<Object> get props => [product];
 }
 
 class DeleteProductEvent extends ProductEvent {
-  final String productId;
-  
-  const DeleteProductEvent({required this.productId});
-  
+  final String id;
+
+  const DeleteProductEvent({required this.id});
+
   @override
-  List<Object> get props => [productId];
+  List<Object> get props => [id];
 }
